@@ -5,8 +5,9 @@
   "main": "lambda/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "package:lambda" : "sls package",
-    "package:spa" : "mkdir -p dist && cd spa && zip -r -X ../dist/spa.zip ."
+    "package:lambda": "sls package",
+    "package:spa": "mkdir -p dist && cd spa && zip -r -X ../dist/spa.zip .",
+    "package:openapi": "swagger-cli bundle --outfile dist/openapi-extended-base.json --type json openapi.yml"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,8 @@
   "homepage": "https://github.com/hamlet-io/aws-cognito-quicksight-auth#readme",
   "devDependencies": {
     "serverless": "^2.1.1",
-    "serverless-offline": "^6.7.0"
+    "serverless-offline": "^6.7.0",
+    "swagger-cli": "^4.0.4"
   },
   "dependencies": {
     "unirest": "^0.6.0"

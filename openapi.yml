@@ -1,0 +1,20 @@
+openapi: 3.0.0
+components:
+  schemas: {}
+  securitySchemes: {}
+info:
+  title: Cognito QuickSight API
+  description: Basic callback API for Cogntio Quicksight
+  version: 1.0.0
+paths:
+  /:
+    post:
+      operationId: cognito-quicksight
+      summary: LoopBack Response
+      responses:
+        '200':
+          description: Loopback
+          content:
+            application/json:
+              schema:
+                type: object
