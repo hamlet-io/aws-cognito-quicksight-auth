@@ -1,0 +1,29 @@
+service: cognito-quicksight
+
+plugins:
+  - serverless-offline
+
+package:
+  individually: true
+  include:
+    - '!./**'
+    - './lambda/**'
+  exclude:
+    - '**'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: ap-southeast-2
+
+functions:
+  cognito-quicksight:
+    handler: lambda/index.handler
+    events:
+      - http:
+          path: /
+          method: post
+          cors:
+            origin: '*'
+            maxAge: 86400

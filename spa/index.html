@@ -3,7 +3,7 @@
 <head>
 	<title>QuickSight via Cognito</title>
 	<meta charset="UTF-8">
-    <link rel="shortcut icon" type="image/png" href="https://a0.awsstatic.com/main/images/site/favicon.ico"/>	
+    <link rel="shortcut icon" type="image/png" href="https://a0.awsstatic.com/main/images/site/favicon.ico"/>
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css" media="screen,projection">
 	<link rel="stylesheet" type="text/css" href="style.css">
@@ -18,7 +18,7 @@
 
 <body  onload="onLoad()">
     <nav>
-        <div class="nav-wrapper blue-grey darken-2"> 
+        <div class="nav-wrapper blue-grey darken-2">
 			<a href="https://aws.amazon.com/cognito/" target="_blank" class="hoverable"><img src="https://d2597oqac71veb.cloudfront.net/201406190823/images/cognito-icon.png" alt="Amazon Cognito" title="Amazon Cognito" style="width:75px;height:75px;"></a>
 			<a href="https://quicksight.aws/" target="_blank" class="hoverable"><img src="https://dpeefs3k5hlj8.cloudfront.net/images/quick_sight_default.f52ebfb7e602e4af4b460cbcd1b9d104.7.svg" alt="Amazon QuickSight" title="Amazon QuickSight" style="width:75px;height:75px;"></a>
         </div>
@@ -44,7 +44,7 @@
 					<ul>
 						<li>If you are not redirected, access the following temporary link:</li>
 						<div id="consoleLink" class="center-align"></div>
-					</ul> 
+					</ul>
 				</div>
 			</div>
 		</div>
@@ -59,7 +59,8 @@
 			</div>
 		</div>
 
-    </div>
+	</div>
+
 	<script>
 	let thisUrlEncoded = encodeURIComponent("https://"+window.location.hostname);
 	let quicksightUrlEncoded = encodeURIComponent("https://quicksight.aws.amazon.com/");
@@ -74,7 +75,7 @@
 
 
 	AWSCognito.config.credentials = new AWS.CognitoIdentityCredentials({
-			IdentityPoolId: identityPool 
+			IdentityPoolId: identityPool
 	});
 
 	AWSCognito.config.update({accessKeyId: 'null', secretAccessKey: 'null'});
@@ -154,14 +155,14 @@
 						},
 						error : function(xhr, status, error) {
 							var err = eval(xhr.responseText);
-							console.log(JSON.stringify(xhr)); 
+							console.log(JSON.stringify(xhr));
 							if(xhr.status == "0"){
 								document.getElementById("statusAuth").innerHTML = "<h5>Token Expired or Invalid! Signing Out...</h5>"
 								auth.signOut();
-							}                  
+							}
 						}
 					});
-					
+
 				});
 			},
 			onFailure: function(err) {

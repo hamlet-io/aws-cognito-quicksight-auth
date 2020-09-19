@@ -1,4 +1,11 @@
 # aws-cognito-quicksight-auth
+
+## Hamlet Update
+
+This repo has been updated to support the [hamlet](https://hamlet.io) deployment framework and its configuration model
+
+## Introduction
+
 A simple JavaScript frontend and SAM template to spin up a serverless backend, federating Cognito User Pools users to QuickSight as part of the blog post: https://aws.amazon.com/blogs/big-data/using-amazon-quicksight-federated-single-sign-on-with-amazon-cognito-user-pools/
 
 <p align="center">
@@ -16,14 +23,14 @@ Get started by cloning the repository then editing some files described with mor
 
 1. Using the AWS CLI, create an S3 bucket in the same region where you want all resources to be deployed:
 
-```
+```bash
 aws s3 mb s3://<bucket-name> --region <AWS Region>
 ```
 
 2. Package the template with the following command and execute the resulting 'aws cloudformation deploy' output using the AWS CLI, referring to the S3 bucket created earlier:
 
-```
-aws cloudformation package --template-file quicksight.yaml --output-template-file quicksight-output.yaml --s3-bucket <S3 Bucket> 
+```bash
+aws cloudformation package --template-file quicksight.yaml --output-template-file quicksight-output.yaml --s3-bucket <S3 Bucket>
 ```
 
 The next command should be something similar to:
