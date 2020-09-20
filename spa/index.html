@@ -83,7 +83,7 @@
 	}
 
 	// Load config for site
-	function getAppConfig (cb) {
+	function getAppConfig (callback) {
 		const defaultConfig = {
 			IDENTITY_POOL_ID: 'us-east-1:XXXXXXXXXXXXXXXXXXXXXXXXXXXXX', //Cognito Identity Pool
 			REGION: 'us-east-1',
@@ -99,14 +99,16 @@
 		if([''].indexOf(window.location.hostname) !== -1) {
 			window.AppConfig = defaultConfig;
 		} else {
-			var oReq = new XMLHttpRequest();
-			oReq.addEventListener("load", function () {
-				window.AppConfig = JSON.parse(this.responseText);
-			});
-			oReq.open("GET", "/config/config.json");
-			oReq.send();
+			var oReq = $.ajax({
+				type : 'GET',
+				url : '/config/config.json',
+				dataType: 'json',
+				success : function( response ) {
+					window.AppConfig = response;
+					callback();
+				}
+			})
 		}
-		cb();
 	}
 
   // Operations when signed in.
