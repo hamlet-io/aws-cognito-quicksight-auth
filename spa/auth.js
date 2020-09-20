@@ -1,5 +1,5 @@
 // Load Config
-function getConfig () {
+function getConfig (cb) {
     const defaultConfig = {
         IDENTITY_POOL_ID: 'us-east-1:XXXXXXXXXXXXXXXXXXXXXXXXXXXXX', //Cognito Identity Pool
         REGION: 'us-east-1',
@@ -12,31 +12,31 @@ function getConfig () {
 
     };
     if(['localhost', '127.0.0.1'].indexOf(window.location.hostname) !== -1) {
-        return defaultConfig;
+        cb(defaultConfig);
     } else {
         var oReq = new XMLHttpRequest();
         oReq.addEventListener("load", function () {
-        return JSON.parse(this.responseText);
+            cb(JSON.parse(this.responseText));
         });
         oReq.open("GET", "/config/config.json");
         oReq.send();
     }
-
-    return defaultConfig
 }
 
-let webConfig = getConfig();
+getConfig(function (config) {
+    window.AppConfig = config;
+});
 
-let identityPool = webConfig.IDENTITY_POOL_ID;
-let region = webConfig.REGION;
-let poolId = webConfig.USER_POOL_ID;
-let clientId = webConfig.CLIENT_ID;
-let appDomain = webConfig.USER_POOL_FQDN;
-let endpoint = webConfig.API_URL;
+let identityPool = window.AppConfig.IDENTITY_POOL_ID;
+let region = window.AppConfig.REGION;
+let poolId = window.AppConfig.USER_POOL_ID;
+let clientId = window.AppConfig.CLIENT_ID;
+let appDomain = window.AppConfig.USER_POOL_FQDN;
+let endpoint = window.AppConfig.API_URL;
 let authData = {
     ClientId : clientId,
     AppWebDomain : appDomain,
     TokenScopesArray : ['openid'],
-    RedirectUriSignIn : webConfig.APP_SIGN_IN_URL,
-    RedirectUriSignOut : webConfig.APP_SIGN_OUT_URL,
+    RedirectUriSignIn : window.AppConfig.APP_SIGN_IN_URL,
+    RedirectUriSignOut : window.AppConfig.APP_SIGN_OUT_URL,
 };
