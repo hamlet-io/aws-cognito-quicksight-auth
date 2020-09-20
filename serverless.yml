@@ -2,6 +2,7 @@ service: cognito-quicksight
 
 plugins:
   - serverless-offline
+  - serverless-plugin-include-dependencies
 
 package:
   individually: true
