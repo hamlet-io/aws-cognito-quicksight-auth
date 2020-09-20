@@ -70,22 +70,20 @@
 		document.getElementById("statusAuth").style.display = 'none';
 		document.getElementById("instructions").style.display = 'none';
 
-		getConfig(function (config) {
-			window.AppConfig = config;
+		getAppConfig(function () {
 			// Initiatlize CognitoAuth object
 			initAWSSDK();
+			var auth = initCognitoSDK();
+			document.getElementById("signInButton").addEventListener("click", function() {
+				userButton(auth);
+			});
+			var curUrl = window.location.href;
+			auth.parseCognitoWebResponse(curUrl);
 		});
-
-		var auth = initCognitoSDK();
-		document.getElementById("signInButton").addEventListener("click", function() {
-			userButton(auth);
-		});
-		var curUrl = window.location.href;
-		auth.parseCognitoWebResponse(curUrl);
 	}
 
 	// Load config for site
-	function getConfig (cb) {
+	function getAppConfig (cb) {
 		const defaultConfig = {
 			IDENTITY_POOL_ID: 'us-east-1:XXXXXXXXXXXXXXXXXXXXXXXXXXXXX', //Cognito Identity Pool
 			REGION: 'us-east-1',
@@ -99,15 +97,16 @@
 		};
 
 		if([''].indexOf(window.location.hostname) !== -1) {
-			cb(defaultConfig);
+			window.AppConfig = defaultConfig;
 		} else {
 			var oReq = new XMLHttpRequest();
 			oReq.addEventListener("load", function () {
-				cb(JSON.parse(this.responseText));
+				window.AppConfig = JSON.parse(this.responseText);
 			});
 			oReq.open("GET", "/config/config.json");
 			oReq.send();
 		}
+		cb();
 	}
 
   // Operations when signed in.
