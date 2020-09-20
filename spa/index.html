@@ -64,27 +64,14 @@
 	<script>
 	let thisUrlEncoded = encodeURIComponent("https://"+window.location.hostname);
 	let quicksightUrlEncoded = encodeURIComponent("https://quicksight.aws.amazon.com/");
-	AWS.config.update({
-		region: region,
-		credentials: new AWS.CognitoIdentityCredentials({
-		IdentityPoolId: ''
-		})
-	});
 
-	AWSCognito.config.region = region;
-
-
-	AWSCognito.config.credentials = new AWS.CognitoIdentityCredentials({
-			IdentityPoolId: identityPool
-	});
-
-	AWSCognito.config.update({accessKeyId: 'null', secretAccessKey: 'null'});
 	// Operations when the web page is loaded.
 	function onLoad() {
 		document.getElementById("statusNotAuth").style.display = 'block';
 		document.getElementById("statusAuth").style.display = 'none';
 		document.getElementById("instructions").style.display = 'none';
 		// Initiatlize CognitoAuth object
+		initAWSSDK();
 		var auth = initCognitoSDK();
 		document.getElementById("signInButton").addEventListener("click", function() {
 			userButton(auth);
@@ -114,8 +101,34 @@
 		}
 	}
 
+  // Initialize the aws sdk
+	function initAWSSDK() {
+		AWS.config.update({
+			region: window.AppConfig.REGION,
+			credentials: new AWS.CognitoIdentityCredentials({
+			IdentityPoolId: ''
+			})
+		});
+
+		AWSCognito.config.region = window.AppConfig.REGION;
+
+
+		AWSCognito.config.credentials = new AWS.CognitoIdentityCredentials({
+				IdentityPoolId: window.AppConfig.IDENTITY_POOL_ID
+		});
+
+		AWSCognito.config.update({accessKeyId: 'null', secretAccessKey: 'null'});
+	}
+
   // Initialize a cognito auth object.
 	function initCognitoSDK() {
+		let authData = {
+			ClientId : window.AppConfig.CLIENT_ID,
+			AppWebDomain : window.AppConfig.USER_POOL_FQDN,
+			TokenScopesArray : ['openid'],
+			RedirectUriSignIn : window.AppConfig.APP_SIGN_IN_URL,
+			RedirectUriSignOut : window.AppConfig.APP_SIGN_OUT_URL,
+		};
 		let auth = new AWSCognito.CognitoIdentityServiceProvider.CognitoAuth(authData);
 		auth.userhandler = {
 			onSuccess: function(result) {
@@ -123,10 +136,10 @@
 				showSignedIn(result);
 				let id_token = auth.signInUserSession.idToken.jwtToken;
 				let cognitoParams = {
-					IdentityPoolId: identityPool,
+					IdentityPoolId: window.AppConfig.IDENTITY_POOL_ID,
 					Logins: {}
 				};
-				cognitoParams.Logins["cognito-idp."+region+".amazonaws.com/"+poolId] = id_token;
+				cognitoParams.Logins["cognito-idp."+window.AppConfig.REGION+".amazonaws.com/"+window.AppConfig.USER_POOL_ID] = id_token;
 				AWS.config.credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
 				AWS.config.getCredentials(function(){
 					let req = new XMLHttpRequest();
@@ -139,7 +152,7 @@
 					let uri = "https://signin.aws.amazon.com/federation?Action=getSigninToken&SessionDuration=43200&Session="+credsEncoded;
 					$.ajax({
 						type : 'POST',
-						url : endpoint,
+						url : window.AppConfig.API_URL,
 						headers : {
 							Authorization : id_token
 						},
