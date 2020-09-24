@@ -12,6 +12,7 @@
 	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.96.0.min.js"></script>
 	<script src="aws-cognito-sdk.js"></script>
 	<script src="amazon-cognito-auth.min.js"></script>
+	<script src="jwt-decode.min.js"></script>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 
@@ -98,6 +99,7 @@
 
 		if([''].indexOf(window.location.hostname) !== -1) {
 			window.AppConfig = defaultConfig;
+			callback();
 		} else {
 			var oReq = $.ajax({
 				type : 'GET',
@@ -165,25 +167,29 @@
 			onSuccess: function(result) {
 				console.log("Cognito Sign in successful!");
 				showSignedIn(result);
+
 				let id_token = auth.signInUserSession.idToken.jwtToken;
+				let decoded_id_token = jwt_decode(id_token);
+
+				// The role session name is used to form the cognito id for the user - Try email if possible
+				let role_session_name = '';
+
+				if (decoded_id_token.email) {
+					role_session_name = decoded_id_token.email
+				}
+				else if (decoded_id_token.sub) {
+					role_session_name = decoded_id_token.sub
+				}
+
+				console.log('Role Session Name: ' + role_session_name )
+
 				let cognitoParams = {
 					IdentityPoolId: window.AppConfig.IDENTITY_POOL_ID,
+					RoleSessionName: role_session_name,
 					Logins: {}
 				};
 				cognitoParams.Logins["cognito-idp."+window.AppConfig.REGION+".amazonaws.com/"+window.AppConfig.USER_POOL_ID] = id_token;
 				AWS.config.credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
-
-				if ( AWS.config.credentials.identityId ) {
-					console.log("Found an identity for the user as " + AWS.config.credentials.identityId );
-					let cognitoParams = {
-						IdentityId: AWS.config.credentials.identityId,
-						Logins: {}
-					};
-					cognitoParams.Logins["cognito-idp."+window.AppConfig.REGION+".amazonaws.com/"+window.AppConfig.USER_POOL_ID] = id_token;
-					AWS.config.credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
-				}
-
-				console.log('Identity Id' + AWS.config.credentials.identityId )
 
 				AWS.config.getCredentials(function(){
 					let req = new XMLHttpRequest();
