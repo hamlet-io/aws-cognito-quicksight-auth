@@ -183,6 +183,8 @@
 					AWS.config.credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
 				}
 
+				console.log('Identity Id' + AWS.config.credentials.identityId )
+
 				AWS.config.getCredentials(function(){
 					let req = new XMLHttpRequest();
 					let creds = {
