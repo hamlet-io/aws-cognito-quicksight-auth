@@ -172,6 +172,12 @@
 				};
 				cognitoParams.Logins["cognito-idp."+window.AppConfig.REGION+".amazonaws.com/"+window.AppConfig.USER_POOL_ID] = id_token;
 				AWS.config.credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
+
+				if ( AWS.config.credentials.identityId ) {
+					cognitoParams.IdentityId = AWS.config.credentials.identityId;
+					AWS.config.credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
+				}
+
 				AWS.config.getCredentials(function(){
 					let req = new XMLHttpRequest();
 					let creds = {
