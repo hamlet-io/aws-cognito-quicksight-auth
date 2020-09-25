@@ -93,8 +93,9 @@
 			CLIENT_ID: 'XXXXXXXXXXXXXXXXX',                             //Cognito User Pool App
 			API_URL: 'https://XXXXXXXXXXX.execute-api.us-east-1.amazonaws.com/prod', // API Endpoint Url
 			APP_SIGN_IN_URL: 'https://d12345example.cloudfront.net',    // CloudFront Url
-			APP_SIGN_OUT_URL: 'https://d12345example.cloudfront.net'    // Cloudfront Url
-
+			APP_SIGN_OUT_URL: 'https://d12345example.cloudfront.net',    // Cloudfront Url
+			ROLE_ARN : 'arn:aws:iam::1234567890:role/quicksight-assume-role', // Role that will be assumed to create RoleSessionName
+			SESSION_DURATION : 43200										// How long the assumed token credentials are valid for
 		};
 
 		if([''].indexOf(window.location.hostname) !== -1) {
@@ -187,7 +188,8 @@
 
 				let assumeParams = {
 					RoleArn : window.AppConfig.ROLE_ARN,
-					RoleSessionName : role_session_name
+					RoleSessionName : role_session_name,
+					DurationSeconds : window.AppConfig.SESSION_DURATION
 				}
 				let sts = new AWS.STS();
 				sts.assumeRole(assumeParams, function(err, roleSession ){
@@ -199,7 +201,7 @@
 							"sessionToken" : roleSession.Credentials.SessionToken
 						}
 						let credsEncoded = encodeURIComponent(JSON.stringify(creds));
-						let uri = "https://signin.aws.amazon.com/federation?Action=getSigninToken&SessionDuration=43200&Session="+credsEncoded;
+						let uri = "https://signin.aws.amazon.com/federation?Action=getSigninToken&Session="+credsEncoded;
 						$.ajax({
 							type : 'POST',
 							url : window.AppConfig.API_URL,
@@ -208,7 +210,6 @@
 							},
 							data : uri,
 							success : function(response) {
-								console.log('Response' + JSON.stringify(response) )
 								let quickSightSSO = "https://signin.aws.amazon.com/federation?Action=login&Issuer="+thisUrlEncoded+"&Destination="+quicksightUrlEncoded+"&SigninToken="+response.SigninToken
 								console.log("Federated Sign In Token: "+response.SigninToken);
 								console.log("AWS Console Sign In URL: "+quickSightSSO);
