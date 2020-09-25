@@ -177,11 +177,13 @@
 				AWS.config.credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
 
 				let role_session_name = 'web-access'
-				if ( AWS.config.credentials.identityId ) {
-					role_session_name = AWS.config.credentials.identityId;
+				let decoded_id_token = jwt_decode(id_token);
+
+				if (decoded_id_token.sub) {
+					role_session_name = decoded_id_token.sub
 				}
 
-				console.log('Role Session ' + role_session_name )
+				console.log('Role Session Name: ' + role_session_name )
 
 				let assumeParams = {
 					RoleArn : window.AppConfig.ROLE_ARN,
