@@ -192,6 +192,7 @@
 				let sts = new AWS.STS();
 				sts.assumeRole(assumeParams, function(err, roleSession ){
 					if ( !err ) {
+						console.log( 'RoleSession Details: ' + roleSession );
 						let req = new XMLHttpRequest();
 						let creds = {
 							"sessionId":roleSession.Credentials.AccessKeyId,
