@@ -145,8 +145,6 @@
 
 		AWSCognito.config.region = window.AppConfig.REGION;
 
-		var sts = new AWS.STS();
-
 		AWSCognito.config.credentials = new AWS.CognitoIdentityCredentials({
 				IdentityPoolId: window.AppConfig.IDENTITY_POOL_ID
 		});
@@ -189,7 +187,7 @@
 					RoleArn : window.AppConfig.ROLE_ARN,
 					RoleSessionName : role_session_name
 				}
-
+				let sts = new AWS.STS();
 				sts.assumeRole(assumeParams, function(err, roleSession ){
 					if ( !err ) {
 						let req = new XMLHttpRequest();
