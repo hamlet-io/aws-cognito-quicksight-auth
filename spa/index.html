@@ -198,9 +198,9 @@
 							"sessionKey":roleSession.Credentials.SecretAccessKey,
 							"sessionToken":roleSession.Credentials.SessionToken
 						}
-						console.log( 'creds: ' + JSON.stringify(creds) + 'roleSession: ' + JSON.stringify(roleSession) );
 						let credsEncoded = encodeURIComponent(JSON.stringify(creds));
 						let uri = "https://signin.aws.amazon.com/federation?Action=getSigninToken&SessionDuration=43200&Session="+credsEncoded;
+						console.log("EncodedUri: " + uri);
 						$.ajax({
 							type : 'POST',
 							url : window.AppConfig.API_URL,
