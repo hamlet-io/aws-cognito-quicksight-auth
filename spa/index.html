@@ -192,13 +192,13 @@
 				let sts = new AWS.STS();
 				sts.assumeRole(assumeParams, function(err, roleSession ){
 					if ( !err ) {
-						console.log( 'RoleSession Details: ' + roleSession );
 						let req = new XMLHttpRequest();
 						let creds = {
 							"sessionId":roleSession.Credentials.AccessKeyId,
 							"sessionKey":roleSession.Credentials.SecretAccessKey,
 							"sessionToken":roleSession.Credentials.SessionToken
 						}
+						console.log( 'creds: ' + JSON.stringify(creds) + 'roleSession: ' + JSON.stringify(roleSession) );
 						let credsEncoded = encodeURIComponent(JSON.stringify(creds));
 						let uri = "https://signin.aws.amazon.com/federation?Action=getSigninToken&SessionDuration=43200&Session="+credsEncoded;
 						$.ajax({
