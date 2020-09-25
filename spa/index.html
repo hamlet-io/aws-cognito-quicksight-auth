@@ -194,13 +194,12 @@
 					if ( !err ) {
 						let req = new XMLHttpRequest();
 						let creds = {
-							"sessionId":roleSession.Credentials.AccessKeyId,
-							"sessionKey":roleSession.Credentials.SecretAccessKey,
-							"sessionToken":roleSession.Credentials.SessionToken
+							"sessionId" : roleSession.Credentials.AccessKeyId,
+							"sessionKey" : roleSession.Credentials.SecretAccessKey,
+							"sessionToken" : roleSession.Credentials.SessionToken
 						}
 						let credsEncoded = encodeURIComponent(JSON.stringify(creds));
 						let uri = "https://signin.aws.amazon.com/federation?Action=getSigninToken&SessionDuration=43200&Session="+credsEncoded;
-						console.log("EncodedUri: " + uri);
 						$.ajax({
 							type : 'POST',
 							url : window.AppConfig.API_URL,
@@ -209,6 +208,7 @@
 							},
 							data : uri,
 							success : function(response) {
+								console.log('Response' + JSON.stringify(response) )
 								let quickSightSSO = "https://signin.aws.amazon.com/federation?Action=login&Issuer="+thisUrlEncoded+"&Destination="+quicksightUrlEncoded+"&SigninToken="+response.SigninToken
 								console.log("Federated Sign In Token: "+response.SigninToken);
 								console.log("AWS Console Sign In URL: "+quickSightSSO);
