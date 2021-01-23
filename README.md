@@ -3,6 +3,12 @@
 ## Hamlet Update
 
 This repo has been updated to support the [hamlet](https://hamlet.io) deployment framework and its configuration model
+It includes a hamlet plugin under `hamlet/cognitoqs` which sets up the infrastructure for this solution.
+
+:::note
+you will need to provide your own userpool and provide it as a link when creating the cognito_quicksight module instance
+:::
+
 
 ## Introduction
 
