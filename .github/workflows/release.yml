@@ -1,0 +1,54 @@
+on:
+  push:
+    tags:
+      - 'v*'
+
+name: Create Lambda Release Artefacts
+
+jobs:
+  build:
+    name: Create Lambda Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build project
+        run: |
+          npm ci
+          npm run package:lambda
+          npm run package:spa
+          npm run package:openapi
+          mkdir dist
+          mv .serverless/cognito-quicksight.zip dist/lambda.zip
+
+      - name: zip openapi
+        working-directory: dist
+        run: |
+          zip -j openapi.zip openapi-extended-base.json
+
+      - name: Create Tag Release
+        id: create_tag_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref  }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Get tag name
+        id: get-tag-name
+        run: |
+          tag_ref="${{github.ref}}"
+          tag_name="$(echo "${tag_ref##*/}" )"
+          echo "::set-output name=tag_name::$tag_name"
+
+      - name: Upload assets
+        id: upload_assets
+        uses: AButler/upload-release-assets@v2.0
+        with:
+          files: 'dist/*.zip'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          release-tag: ${{steps.get-tag-name.outputs.tag_name}}
