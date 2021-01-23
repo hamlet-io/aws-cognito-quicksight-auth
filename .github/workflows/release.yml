@@ -19,7 +19,6 @@ jobs:
           npm run package:lambda
           npm run package:spa
           npm run package:openapi
-          mkdir dist
           mv .serverless/cognito-quicksight.zip dist/lambda.zip
 
       - name: zip openapi
