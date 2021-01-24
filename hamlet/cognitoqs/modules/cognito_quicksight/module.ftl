@@ -24,6 +24,13 @@
             "Default" : "default"
         },
         {
+            "Names" : "quicksightUserRole",
+            "Description" : "The QuickSight role assigned to users who login through cognito",
+            "Type" : STRING_TYPE,
+            "Values" : [ "Admin", "User", "Reader" ],
+            "Default" : "Reader"
+        },
+        {
             "Names" : "userPoolClientLink",
             "Description" : "Link to a userpool client which will be used as the authorisation source",
             "Children" : linkChildrenConfiguration
@@ -67,6 +74,7 @@
         tier
         instance
         userPoolClientLink
+        quicksightUserRole
         cogntioDeploymentProfileSuffix
         lambdaImageUrl
         lambdaImageHash
@@ -86,8 +94,9 @@
     [#local lambdaId = formatName(id, "lambda") ]
     [#local cdnId = formatName(id, "cdn") ]
     [#local spaId = formatName(id, "spa") ]
-    [#local authId = formatName(id + "auth", "externalservice")]
+    [#local authId = formatName(id, "externalservice", "auth")]
     [#local federatedRoleId = formatName(id, "federatedrole")]
+    [#local federatedRoleSettingsNamespace = formatName( namespace, tier, id, "allusers")]
 
     [#local userPoolLink = {
         "Tier" : (userPoolClientLink.Tier)!"",
@@ -143,6 +152,21 @@
                 }
             }
         }
+    /]
+
+    [#-- Cloud Role configuration --]
+    [@loadModule
+        settingSets=[
+            {
+                "Type" : "Settings",
+                "Scope" : "Products",
+                "Namespace" : federatedRoleSettingsNamespace,
+                "Settings" : {
+                    "QUICKSIGHT_ROLE" : quicksightUserRole
+                }
+            }
+        ]
+
     /]
 
     [#-- API Configuration to map Specification to Lambda Resources --]
