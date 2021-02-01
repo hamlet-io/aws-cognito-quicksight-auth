@@ -33,7 +33,7 @@
         {
             "Names" : "userPoolClientLink",
             "Description" : "Link to a userpool client which will be used as the authorisation source",
-            "Children" : linkChildrenConfiguration
+            "AttributeSet" : LINK_ATTRIBUTESET_TYPE
         },
         {
             "Names" : "cogntioDeploymentProfileSuffix",
